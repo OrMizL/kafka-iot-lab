@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    depends_on: [zookeeper]
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  ksqldb:
+    image: confluentinc/ksqldb-server:0.32.0
+    depends_on: [kafka]
+    environment:
+      KSQL_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "8088:8088"  # REST & CLI
