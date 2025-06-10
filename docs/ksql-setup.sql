@@ -29,11 +29,11 @@ GROUP BY deviceId
 EMIT FINAL;
 
 -- 3) Optional flat stream without key columns
--- CREATE STREAM temp_by_min_flat
--- WITH (VALUE_FORMAT='JSON') AS
--- SELECT deviceId, minute, avg_temp
--- FROM   temp_by_min
--- EMIT CHANGES;
+CREATE STREAM temp_by_min_flat
+WITH (VALUE_FORMAT='JSON') AS
+SELECT deviceId, minute, avg_temp
+FROM   temp_by_min
+EMIT CHANGES;
 
 -- if not flat: SELECT deviceId, minute, avg_temp FROM temp_by_min EMIT CHANGES;
 -- if flat: SELECT * FROM temp_by_min_flat EMIT CHANGES;
