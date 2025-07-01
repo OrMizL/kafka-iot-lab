@@ -1,5 +1,3 @@
--- docs/ksql-setup.sql
--- Set pragmatic defaults for a single-broker dev stack
 SET 'processing.guarantee' = 'at_least_once';
 
 -- 1) Stream over raw sensor topic
@@ -14,7 +12,7 @@ CREATE STREAM sensor_raw_stream (
   TIMESTAMP    = 'ts'
 );
 
--- 2) Rolling-average minute table (cleaned)
+-- 2) Rolling-average minute table
 CREATE TABLE temp_by_min
 WITH (VALUE_FORMAT='JSON') AS
 SELECT
@@ -29,11 +27,30 @@ GROUP BY deviceId
 EMIT FINAL;
 
 -- 3) Optional flat stream without key columns
-CREATE STREAM temp_by_min_flat
-WITH (VALUE_FORMAT='JSON') AS
-SELECT deviceId, minute, avg_temp
-FROM   temp_by_min
-EMIT CHANGES;
+-- CREATE STREAM temp_by_min_flat
+-- WITH (VALUE_FORMAT='JSON') AS
+-- SELECT deviceId, minute, avg_temp
+-- FROM   temp_by_min
+-- EMIT CHANGES;
 
 -- if not flat: SELECT deviceId, minute, avg_temp FROM temp_by_min EMIT CHANGES;
 -- if flat: SELECT * FROM temp_by_min_flat EMIT CHANGES;
+
+
+-- TABLE TO STREAM
+-- 1. explicit schema so we control column order
+-- CREATE STREAM temp_by_min_flat (
+--   deviceId  STRING,
+--   minute    STRING,
+--   avg_temp  DOUBLE
+-- ) WITH (
+--   KAFKA_TOPIC = 'temp_by_min_flat',
+--   VALUE_FORMAT = 'JSON',
+--   PARTITIONS   = 1
+-- );
+
+-- -- 2. pipe every new row from the table into the stream
+-- INSERT INTO temp_by_min_flat
+-- SELECT  deviceId, minute, avg_temp
+-- FROM    temp_by_min
+-- EMIT CHANGES;
