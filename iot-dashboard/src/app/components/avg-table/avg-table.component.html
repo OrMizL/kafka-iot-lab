@@ -1,0 +1,12 @@
+<table>
+    <thead><tr><th>Device</th><th>Minute</th><th>Avg °C</th></tr></thead>
+    <tbody>
+        <tr *ngFor="let row of rowsByDevice()">
+        <td>{{ row.deviceId }}</td>
+        <td>{{ row.minute }}</td>
+        <td [ngClass]="tempClass(row.avg_temp)">
+            {{ row.avg_temp | number:'1.1-1' }}
+        </td>
+        </tr>
+    </tbody>
+</table>

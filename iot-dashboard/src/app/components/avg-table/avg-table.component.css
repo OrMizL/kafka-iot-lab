@@ -1,0 +1,21 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,td {
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+}
+
+.ok {
+    color: green;
+}
+
+.warm {
+    color: orange;
+}
+
+.hot {
+    color: red;
+}
